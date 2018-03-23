@@ -2,31 +2,31 @@
 
 {% block javascript %}
     <script>
+
         $("#trueForm").submit(function (event) {
             var answer = $('input[type=radio]:checked');
             var _answer = answer.val();
-            var csrf = $("input[name='csrfmiddlewaretoken']").val();
+            var csrf = $("input[name=csrfmiddlewaretoken]").val();
             $.ajax({
                 url: "{% url 'index' %}",
-                type: "GET",
-                headers:{
+                type: "PUT",
+                headers: {
                     'X-CSRFToken': csrf
                 },
-                data: {
+                data: JSON.stringify({
                     'answer': _answer
-                },
+                }),
                 dataType: 'json',
                 success: function (data) {
-                        if (data['is_true']) {
-                            answer.css("background-color", "green");
-                        }
-                        else {
-                            $('#' + data['true_answer']).css("background-color", "green");
-                            answer.css("background-color", "red");
-                        }
+                    if (data['is_true']) {
+                        $('#' + _answer).css("background-color", "green");
+                    }
+                    else {
+                        $('#' + data['true_answer']).css("background-color", "green");
+                        $('#' + _answer).css("background-color", "red");
+                    }
                 }
             });
-            event.preventDefault();
         });
     </script>
 {% endblock %}

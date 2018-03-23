@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <form action="{% url 'index' %}" method="post">
-        {% csrf_token %}
+    <form action="{% url 'index' %}" method="get">
         <button type="submit">Start the Game</button>
     </form>
 {% endblock %}

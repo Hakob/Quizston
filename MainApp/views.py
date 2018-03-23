@@ -1,14 +1,15 @@
-from time import sleep
-
-from django.shortcuts import render
-from django.views import View
-from .models import PossibleAnswers, Answers, Questions
-from random import randint, shuffle
 import csv
+import json
+from random import randint, shuffle
+
 from django.contrib.auth.forms import UserCreationForm
-from django.views.generic.edit import CreateView
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.shortcuts import render
+from django.views import View
+from django.views.generic.edit import CreateView
+
+from .models import PossibleAnswers, Answers, Questions
 
 
 def validate_username(request):
@@ -31,9 +32,13 @@ class MyView(View):
                'inc': 5,
                'delta': 3}
 
-    def get(self, request):
-        if 'X-CSRFToken' in request.META:
-            answer = request.GET.get('answer')
+    def put(self, request):
+        if 'HTTP_X_CSRFTOKEN' in request.META:
+            answer = json.loads(request.body.decode('utf-8'))
+            try:
+                answer = answer['answer']
+            except KeyError:
+                return JsonResponse({})
             data = {
                 'is_true': False
             }
@@ -45,16 +50,15 @@ class MyView(View):
             self.answered_q_id.pop()
 
             return JsonResponse(data)
-        else:
-            if self.answered_q_id[0]:
-                self.answered_q_id[:] = [0]
-            return render(request, 'start.html', context=None)
+
+    def get(self, request):
+        return render(request, 'index.html', context=None)
 
     def post(self, request):
         if len(self.answered_q_id) - 1 == 5:
             context = {'points': self.quality['points']}
             response = render(request, 'home.html', context=context)
-            self.answered_q_id = [0]
+            self.answered_q_id[:] = [0]
             self.quality['points'] = 0
             self.quality['inc'] = 5
             return response
