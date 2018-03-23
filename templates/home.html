@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Results
+{% endblock %}
+
+{% block content %}
+
+    <h1>You've collected {{ points }} points</h1>
+    <a href="{% url 'start' %}">Restart</a>
+
+{% endblock %}
