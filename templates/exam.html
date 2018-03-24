@@ -18,7 +18,13 @@
 
 
 <div id="exam_list" class="text-center center-block">
-    <span class="row"></span>
+    <span class="row">
+
+    <div class="row text-center">
+        <button class="btn btn-default" onclick="window.location.href='{% url 'index' %}'">Start Game</button>
+    </div>
+    </span>
+
     <div class="row">
         <a href="#" class="add_exam">
             <div class="panel panel-default col-sm-2 col-sm-offset-5">
@@ -139,7 +145,7 @@
 
     {% load staticfiles %}
 <script src="{% static 'js/jquery.min.js' %}"></script>
-{#<script src="{% static 'js/bootstrap.min.js' %}"></script>#}
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/validate.js' %}"></script>
 <script>
     function template(id, name) {
@@ -152,7 +158,6 @@
 
     $.get("/quiz/api/exam/", function (data, status) {
         for (var i = 0; i < data.length; i++) {
-            //alert(i);
             $("#exam_list").append(template(data[i].id, data[i].name));
         }
     });
