@@ -7,26 +7,26 @@ from django.db import models
 #     password = models.CharField(max_length=50,default="")
 #     user = models.OneToOneField(User)
 #
-#     def __unicode__(self):
+#     def __str__(self):
 #         return self.name
 
 
 class Exam(models.Model):
-    name = models.CharField(max_length=100, default="")
+    name = models.CharField(max_length=100, blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
 class Question(models.Model):
-    question = models.TextField(max_length=200, default="")
-    option1 = models.CharField(max_length=50, default="")
-    option2 = models.CharField(max_length=50, default="")
-    option3 = models.CharField(max_length=50, default="")
-    option4 = models.CharField(max_length=50, default="")
-    answer = models.CharField(max_length=50, default="")
+    question = models.TextField(max_length=200, blank=False)
+    option1 = models.CharField(max_length=50, blank=False)
+    option2 = models.CharField(max_length=50, blank=False)
+    option3 = models.CharField(max_length=50, blank=False)
+    option4 = models.CharField(max_length=50, blank=False)
+    answer = models.CharField(max_length=50, blank=False)
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.question

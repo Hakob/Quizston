@@ -6,7 +6,9 @@
 
 {% block content %}
 
-    <h1>You've collected {{ points }} points</h1>
-    <a href="{% url 'index' %}">Restart</a>
+<div class="jumbotron text-center" id="score">
+    <p>Your Score is {{ points }} out of 55</p>
+    <button class="btn btn-default" onclick="window.location.href='{% url 'welcome' %}'">FINISH</button>
+</div>
 
 {% endblock %}

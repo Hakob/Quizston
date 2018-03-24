@@ -1,50 +1,44 @@
 {% extends 'base.html' %}
 
 {% block javascript %}
-    <script>
-
-        $("#trueForm").submit(function (event) {
-            var answer = $('input[type=radio]:checked');
-            var _answer = answer.val();
-            var csrf = $("input[name=csrfmiddlewaretoken]").val();
-            $.ajax({
-                url: "{% url 'index' %}",
-                type: "PUT",
-                headers: {
-                    'X-CSRFToken': csrf
-                },
-                data: JSON.stringify({
-                    'answer': _answer
-                }),
-                dataType: 'json',
-                success: function (data) {
-                    if (data['is_true']) {
-                        $('#' + _answer).css("background-color", "green");
-                    }
-                    else {
-                        $('#' + _answer).css("background-color", "red");
-                        $('#' + data['true_answer']).css("background-color", "green");
-                    }
-                }
-            });
-        });
-    </script>
+    {% load staticfiles %}
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/check_answer.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <form action="{% url 'index' %}" method="post" id="trueForm">
-        {% csrf_token %}
-        <p>{{ question }}</p>
-        <span>
-      {% for ans in possible_answers %}
-          <div id="{{ ans }}">
-        <input type="radio" name="answer" value="{{ ans }}">
-        <label>{{ ans }}</label>
-          </div>
-      {% endfor %}
-            <div>
-        <button type="submit">Submit</button>
+
+
+    <div id="exam_list" class="text-center center-block">
+        <span class="row"></span>
+
+        <div class="row" id="show-exam-form">
+            <div class="panel panel-default col-sm-6 col-sm-offset-3">
+                <div class="panel-body">
+
+                    <form name="exam-form" id="exam-form" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <p>{{ question }}</p>
+                            <span>
+                      {% for ans in possible_answers %}
+                          <div id="{{ ans }}">
+                        <input type="radio" name="answer" value="{{ ans }}">
+                        <label>{{ ans }}</label>
+                          </div>
+                      {% endfor %}
+                        </span>
+                        </div>
+                        <input type="hidden" class="form-control" name="user" value="{{ request.user.id }}"/>
+                        <div class="form-group">
+                            <button class="btn btn-default" type="submit">
+                                <span class="glyphicon glyphicon-ok">Submit</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-      </span>
-    </form>
+
 {% endblock %}

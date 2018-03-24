@@ -53,6 +53,9 @@ class MyView(View):
             return JsonResponse(data)
 
     def get(self, request):
+        self.answered_q_id[:] = [0]
+        self.quality['points'] = 0
+        self.quality['inc'] = 5
         return render(request, 'index.html', context=None)
 
     def post(self, request):
@@ -84,5 +87,4 @@ class MyView(View):
         }
 
         response = render(request, self.template_name, context=context)
-        sleep(3)
         return response
