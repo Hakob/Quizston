@@ -1,6 +1,7 @@
 import csv
 import json
 from random import randint, shuffle
+from time import sleep
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -71,7 +72,8 @@ class MyView(View):
         question = Questions.objects.get(auto_increment_id=random_q_id)
         true_answer = Answers.objects.get(which_questions_answer__auto_increment_id=random_q_id)
         possible_answers = PossibleAnswers.objects.get(questions_possible_answers__auto_increment_id=random_q_id)
-        pos_ans = list(csv.reader(str(possible_answers).splitlines(), delimiter=','))[0]
+        stringed = str(possible_answers).splitlines()
+        pos_ans = list(csv.reader(stringed, delimiter=','))[0]
         true_answer = str(true_answer)
         self.answered_q_id.append(true_answer)
         pos_ans.append(true_answer)
@@ -82,4 +84,5 @@ class MyView(View):
         }
 
         response = render(request, self.template_name, context=context)
+        sleep(3)
         return response
