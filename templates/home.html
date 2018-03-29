@@ -7,8 +7,27 @@
 {% block content %}
 
 <div class="jumbotron text-center" id="score">
-    <p>Your Score is {{ points }} out of 55</p>
+    <p>Your Score is {{ points }} out of <b>55</b></p>
+
     <button class="btn btn-default" onclick="window.location.href='{% url 'welcome' %}'">FINISH</button>
 </div>
 
+{% endblock %}
+
+{% block javascript %}
+
+    {% load staticfiles %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script>
+        window.addEventListener('load', function () {
+            $.ajax({
+			url: "{% url 'index' %}",
+			type: "GET",
+
+			success: function () {
+			    console.log('Success');
+            }
+		});
+        })
+    </script>
 {% endblock %}

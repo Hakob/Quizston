@@ -32,9 +32,8 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
-# SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-# SESSION_FILE_PATH = BASE_DIR + '\\session-path'
-# print(tempfile.gettempdir())
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+SESSION_FILE_PATH = BASE_DIR + '\\session-path'
 
 
 MIDDLEWARE = [
@@ -80,6 +79,7 @@ DATABASES = {
         },
     }
 }
+
 
 
 # Password validation

@@ -34,7 +34,8 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-offset-3 col-sm-6">
-                                <input type="text" class="form-control form-control-lg" name="name" placeholder="Name" />
+                                <input type="text" class="form-control form-control-lg" id="id_username" name="Username"
+                                       placeholder="Username" />
                             </div>
                         </div>
 
@@ -75,6 +76,26 @@
     {% load staticfiles %}
     <script src="{% static 'js/jquery.min.js'%}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+     <script>
+    $("#id_username").on('change', function () {
+      var username = $(this).val();
+        console.log(username);
+      $.ajax({
+        url:"{% url 'validate_username' %}",
+        data: {
+          'username': username
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data['is_taken']) {
+            alert("A user with this username already exists.");
+          }
+        }
+      });
+
+    });
+  </script>
     <script src="{% static 'js/validate.js' %}"></script>
 
 {% endblock %}

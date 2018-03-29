@@ -2,41 +2,47 @@
 
 {% block javascript %}
     {% load staticfiles %}
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script >
-    $("#exam-form").submit(function (event) {
-    var answer = $('input[type=radio]:checked');
-    var _answer = answer.val();
-    var csrf = $("input[name=csrfmiddlewaretoken]").val();
-    $.ajax({
-        url: "{% url 'index' %}",
-        type: "PUT",
-        headers: {
-            'X-CSRFToken': csrf
-        },
-        data: JSON.stringify({
-            'answer': _answer
-        }),
-        dataType: 'json',
-        success: function (data) {
-
-            if (data['is_true']) {
-                $('#' + _answer).css("background-color", "green");
-            }
-            else {
-                $('#' + _answer).css("background-color", "red");
-                $('#' + data['true_answer']).css("background-color", "green");
-            }
-        }
-    });
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script>
+    $("#exam-form").submit(function () {
+		var answer = $('input[type=radio]:checked').val();
+		var csrf = $("input[name=csrfmiddlewaretoken]").val();
+		$.ajax({
+			url: "{% url 'index' %}",
+			type: "PUT",
+			headers: {
+				'X-CSRFToken': csrf
+			},
+			data: JSON.stringify({
+				'answer': answer
+			}),
+			dataType: 'json',
+			success: function (data) {
+				if (data['is_true'] == true) {
+					$(document.getElementById(answer)).css("background-color", "green");
+				}
+				else {
+					$(document.getElementById(answer)).css("background-color", "red");
+					$(document.getElementById(data['true_answer'])).css("background-color", "green");
+				}
+				 setTimeout(function(){ location.reload(); }, 3000); 
+			}
+		});
+	return false;
 });
     </script>
 {% endblock %}
 
 {% block content %}
 
-
+    {% if not request.user.is_authenticated %}
+        <script>
+        alert("Please Login first to start the game")
+        </script>
+        <meta http-equiv="REFRESH" content="0;{% url 'welcome' %}">
+		
+    {% else %}
     <div id="exam_list" class="text-center center-block">
         <span class="row"></span>
 
@@ -44,7 +50,7 @@
             <div class="panel panel-default col-sm-6 col-sm-offset-3">
                 <div class="panel-body">
 
-                    <form name="exam-form" id="exam-form" method="post">
+                    <form name="exam-form" id="exam-form" method="post" action="{% url 'index' %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <p>{{ question }}</p>
@@ -68,5 +74,7 @@
             </div>
         </div>
     </div>
+
+    {% endif %}
 
 {% endblock %}

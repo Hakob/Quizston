@@ -2,12 +2,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import render
-from rest_framework import viewsets
 
-from .models import Question, Exam
-from .serializer import QuestionSerialzer, ExamSerializer
+from .models import Exam
+
+
+def validate_username(request):
+    username = request.GET.get('Username', None)
+    data = {
+        'is_taken': User.objects.filter(username__iexact=username).exists()
+    }
+    return JsonResponse(data)
 
 
 # welcome screen
@@ -28,7 +34,7 @@ def create_user(request):
         name = request.POST.get("name")
         email = request.POST.get("email")
         password = request.POST.get("password")
-        user = User.objects.create_user(name, email, password)
+        User.objects.create_user(name, email, password)
     return render(request, "outdex.html")
 
 
@@ -64,43 +70,3 @@ def add_exam(request):
         exam.user = User.objects.get(pk=user)
         exam.save()
         return HttpResponse(exam.id)
-
-
-@login_required
-def add_question(request):
-    if request.method == "POST":
-        question = request.POST.get("question")
-        option1 = request.POST.get("option1")
-        option2 = request.POST.get("option2")
-        option3 = request.POST.get("option3")
-        option4 = request.POST.get("option4")
-        answer = request.POST.get("answer")
-        exam = request.POST.get("exam")
-        q = Question()
-        q.question = question
-        q.option1 = option1
-        q.option2 = option2
-        q.option3 = option3
-        q.option4 = option4
-        q.answer = answer
-        q.exam = Exam.objects.get(pk=int(exam))
-        q.save()
-        return HttpResponse("success")
-
-
-class QuestionViewset(viewsets.ModelViewSet):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerialzer
-
-
-class ExamViewset(viewsets.ModelViewSet):
-    queryset = Exam.objects.all()
-    serializer_class = ExamSerializer
-
-
-class ExamQuestionViewset(viewsets.ModelViewSet):
-    serializer_class = QuestionSerialzer
-    queryset = Question.objects.filter(exam_id=1)
-
-    def get_queryset(self):
-        return Question.objects.filter(exam_id=self.kwargs.get('pk'))

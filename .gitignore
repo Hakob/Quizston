@@ -73,3 +73,6 @@ venv/
 
 my.cnf
 __init__
+
+
+session-path
