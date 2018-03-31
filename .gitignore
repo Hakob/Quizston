@@ -4,6 +4,16 @@ __pycache__/
 *.pot
 *.pyc
 
+staticfiles
+.env
+venv/
+
+my.cnf
+__init__
+
+session-path/
+
+
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -67,12 +77,3 @@ wheels/
 pip-log.txt
 pip-delete-this-directory.txt
 
-staticfiles
-.env
-venv/
-
-my.cnf
-__init__
-
-
-session-path

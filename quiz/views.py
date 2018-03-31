@@ -5,7 +5,7 @@ from django.contrib.auth.views import logout
 from django.http.response import HttpResponse, JsonResponse
 from django.shortcuts import render
 
-from .models import Exam
+from .models import BestResult
 
 
 def validate_username(request):
@@ -61,12 +61,37 @@ def log_out(request):
 
 
 @login_required
-def add_exam(request):
+def update_result(request):
     if request.method == 'POST':
-        exam_name = request.POST.get("exam_name")
-        user = request.POST.get("user")
-        exam = Exam()
-        exam.name = exam_name
-        exam.user = User.objects.get(pk=user)
-        exam.save()
-        return HttpResponse(exam.id)
+        user_id = int(request.POST.get("user_id"))
+        points = int(request.POST.get("points"))
+        try:
+            old_result = BestResult.objects.get(user=user_id)
+            if points > old_result.score:
+                old_result.score = points
+                old_result.save()
+                return HttpResponse(status=202)
+
+        except BestResult.DoesNotExist:
+            result = BestResult(score=points, user=user_id)
+            result.save()
+            return HttpResponse(status=201)
+
+
+@login_required
+def top10(request):
+    tops = BestResult.objects.order_by('-score')[:10]
+    users = []
+    scores = []
+    tpl = ['name', 'score']
+    for top in tops:
+        users.append(str(top.user))
+        scores.append(top.score)
+    scores = list(zip(users, scores))
+    users[:] = []
+    for i in scores:
+        users.append(dict(zip(tpl, i)))
+    context = {
+        'users': users
+    }
+    return render(request, 'results.html', context=context)

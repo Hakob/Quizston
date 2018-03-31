@@ -28,11 +28,12 @@ class MyView(View):
             return JsonResponse(data)
 
     def get(self, request):
-        request.session['points'] = 0
-        request.session['inc'] = 5
-        request.session['delta'] = 3
-        request.session['answered_q_id'] = []
-
+        if not request.user.is_authenticated:
+            request.session['points'] = 0
+            request.session['inc'] = 5
+            request.session['delta'] = 3
+            request.session['answered_q_id'] = []
+            return render(request, 'redirect.html')
         return JsonResponse({})
 
     def post(self, request):

@@ -19,7 +19,7 @@
 			}),
 			dataType: 'json',
 			success: function (data) {
-				if (data['is_true'] == true) {
+				if (data['is_true'] === true) {
 					$(document.getElementById(answer)).css("background-color", "green");
 				}
 				else {
@@ -36,13 +36,6 @@
 
 {% block content %}
 
-    {% if not request.user.is_authenticated %}
-        <script>
-        alert("Please Login first to start the game")
-        </script>
-        <meta http-equiv="REFRESH" content="0;{% url 'welcome' %}">
-		
-    {% else %}
     <div id="exam_list" class="text-center center-block">
         <span class="row"></span>
 
@@ -63,7 +56,6 @@
                       {% endfor %}
                         </span>
                         </div>
-                        <input type="hidden" class="form-control" name="user" value="{{ request.user.id }}"/>
                         <div class="form-group">
                             <button class="btn btn-default" type="submit">
                                 <span class="glyphicon glyphicon-ok">Submit</span>
@@ -75,6 +67,5 @@
         </div>
     </div>
 
-    {% endif %}
 
 {% endblock %}

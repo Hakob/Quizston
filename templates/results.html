@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Hall Of Fame
+{% endblock %}
+
+{% block content %}
+
+    {% load staticfiles %}
+    <link href="{% static 'css/results.css' %}" rel="stylesheet" type="text/css"/>
+
+    <style>
+        {% with '#00bcd4 #ff9800 #f44336 #f58fee #761c19 #1b6d85 #3e8f3e #800080 #4CAF50 #2196F3' as colors %}
+            {% for color in colors.split %}
+
+                .bar-{{ forloop.revcounter }} {
+                    width: calc({{ forloop.revcounter }} * 10%);
+                    height: 18px;
+                    background-color: {{ color }};
+                }
+
+            {% endfor %}
+        {% endwith %}
+    </style>
+
+    <h1><b> TOP 10 </b></h1>
+    <hr style="border:3px solid #f1f1f1">
+    <div class="row">
+        {% for user in users %}
+
+            <div class="side">
+                <div>{{ user.name }}</div>
+            </div>
+            <div class="middle">
+                <div class="bar-container">
+                    <div class="bar-{{ forloop.revcounter }}"></div>
+                </div>
+            </div>
+            <div class="side right">
+                <div><b>{{ user.score }}</b></div>
+            </div>
+
+        {% endfor %}
+        <div class="middle">
+            <div>
+                <button onclick="window.location.href={% url 'welcome' %}"> Go Back </button>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
