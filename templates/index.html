@@ -1,7 +1,44 @@
 {% extends 'base.html' %}
 
+{% block content %}
+
+    <div id="exam_list" class="text-center center-block">
+        <span class="row"></span>
+
+        <div class="row" id="show-exam-form">
+            <div class="panel panel-default col-sm-6 col-sm-offset-3">
+                <div class="panel-body">
+
+                    <form name="exam-form" id="exam-form" method="post" action="{% url 'index' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <p>{{ question }}</p>
+                            <span>
+                      {% for ans in possible_answers %}
+                          <div id="{{ ans }}">
+                        <input type="radio" id = 'checkbox{{forloop.counter}}' name="answer" value="{{ ans }}">
+                        <label class = 'check_label' for ='checkbox{{forloop.counter}}'>{{ ans }}</label>
+                          </div>
+                      {% endfor %}
+                        </span>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-default" type="submit">
+                                <span class="glyphicon glyphicon-ok">Submit</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
 {% block javascript %}
     {% load staticfiles %}
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script>
@@ -26,46 +63,10 @@
 					$(document.getElementById(answer)).css("background-color", "red");
 					$(document.getElementById(data['true_answer'])).css("background-color", "green");
 				}
-				 setTimeout(function(){ location.reload(); }, 3000); 
+				 setTimeout(function(){ location.reload(); }, 2000); 
 			}
 		});
 	return false;
 });
     </script>
-{% endblock %}
-
-{% block content %}
-
-    <div id="exam_list" class="text-center center-block">
-        <span class="row"></span>
-
-        <div class="row" id="show-exam-form">
-            <div class="panel panel-default col-sm-6 col-sm-offset-3">
-                <div class="panel-body">
-
-                    <form name="exam-form" id="exam-form" method="post" action="{% url 'index' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <p>{{ question }}</p>
-                            <span>
-                      {% for ans in possible_answers %}
-                          <div id="{{ ans }}">
-                        <input type="radio" name="answer" value="{{ ans }}">
-                        <label>{{ ans }}</label>
-                          </div>
-                      {% endfor %}
-                        </span>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-default" type="submit">
-                                <span class="glyphicon glyphicon-ok">Submit</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 {% endblock %}

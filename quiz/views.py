@@ -9,7 +9,7 @@ from .models import BestResult
 
 
 def validate_username(request):
-    username = request.GET.get('Username', None)
+    username = request.GET.get('name', None)
     data = {
         'is_taken': User.objects.filter(username__iexact=username).exists()
     }
@@ -31,7 +31,7 @@ def get_data(request):
 # view for creating user
 def create_user(request):
     if request.method == 'POST':
-        name = request.POST.get("name")
+        name = request.POST.get("name")    # username
         email = request.POST.get("email")
         password = request.POST.get("password")
         User.objects.create_user(name, email, password)
@@ -66,14 +66,14 @@ def update_result(request):
         user_id = int(request.POST.get("user_id"))
         points = int(request.POST.get("points"))
         try:
-            old_result = BestResult.objects.get(user=user_id)
+            old_result = BestResult.objects.get(user_id=user_id)
             if points > old_result.score:
                 old_result.score = points
                 old_result.save()
                 return HttpResponse(status=202)
 
         except BestResult.DoesNotExist:
-            result = BestResult(score=points, user=user_id)
+            result = BestResult(score=points, user_id=user_id)
             result.save()
             return HttpResponse(status=201)
 
@@ -94,4 +94,4 @@ def top10(request):
     context = {
         'users': users
     }
-    return render(request, 'results.html', context=context)
+    return render(request, 'results.html', context=context)  # results.html

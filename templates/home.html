@@ -8,7 +8,7 @@
 
 <div class="jumbotron text-center" id="score">
     <p>Your Score is {{ points }} out of <b>55</b></p>
-
+    {% csrf_token %}
     <button class="btn btn-default" onclick="window.location.href='{% url 'welcome' %}'">FINISH</button>
 </div>
 
@@ -17,11 +17,16 @@
 {% block javascript %}
 
     {% load staticfiles %}
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script>
+        var csrf = $("input[name=csrfmiddlewaretoken]").val();
         $.ajax({
 			url: "{% url 'update_result' %}",
 			type: "POST",
+            headers: {
+                'X-CSRFToken': csrf
+            },
             data: {
 				'user_id': {{ request.user.id }},
                 'points': {{ points }}

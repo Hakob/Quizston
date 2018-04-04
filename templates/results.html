@@ -6,47 +6,220 @@
 
 {% block content %}
 
-    {% load staticfiles %}
-    <link href="{% static 'css/results.css' %}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 
     <style>
+a {
+  position: relative;
+  display: inline-block;
+  padding: 1.2em 4em;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  color: white;
+}
+a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  border-radius: 4px;
+  -webkit-transition: -webkit-box-shadow .5s ease, -webkit-transform .2s ease;
+  transition: -webkit-box-shadow .5s ease, -webkit-transform .2s ease;
+  transition: box-shadow .5s ease, transform .2s ease;
+  transition: box-shadow .5s ease, transform .2s ease, -webkit-box-shadow .5s ease, -webkit-transform .2s ease;
+  will-change: transform;
+  -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  -webkit-transform: translateY(var(--ty, 0)) rotateX(var(--rx, 0)) rotateY(var(--ry, 0)) translateZ(var(--tz, -12px));
+          transform: translateY(var(--ty, 0)) rotateX(var(--rx, 0)) rotateY(var(--ry, 0)) translateZ(var(--tz, -12px));
+}
+a:hover::before {
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+a::after {
+  position: relative;
+  display: inline-block;
+  content: attr(data-title);
+  -webkit-transition: -webkit-transform .2s ease;
+  transition: -webkit-transform .2s ease;
+  transition: transform .2s ease;
+  transition: transform .2s ease, -webkit-transform .2s ease;
+  font-weight: bold;
+  letter-spacing: .01em;
+  will-change: transform;
+  -webkit-transform: translateY(var(--ty, 0)) rotateX(var(--rx, 0)) rotateY(var(--ry, 0));
+          transform: translateY(var(--ty, 0)) rotateX(var(--rx, 0)) rotateY(var(--ry, 0));
+}
+
+        .title {
+            display: inline-block;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            background-image: none;
+            background-image: linear-gradient(45deg, #540e04 0%, #990912 35%, #918710 66%, #cdd30d 100%);
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            font-family: 'Roboto', arial;
+        }
+
         {% with '#00bcd4 #ff9800 #f44336 #f58fee #761c19 #1b6d85 #3e8f3e #800080 #4CAF50 #2196F3' as colors %}
             {% for color in colors.split %}
 
-                .bar-{{ forloop.revcounter }} {
-                    width: calc({{ forloop.revcounter }} * 10%);
-                    height: 18px;
-                    background-color: {{ color }};
+                .progress__value-{{ forloop.revcounter }} {
+                    stroke: {{ color }};
+                    stroke-linecap: round;
                 }
+
+                #cont-{{ forloop.revcounter }} {
+                    display: block;
+                    height: 200px;
+                    width: 200px;
+                    position: relative;
+                    content: attr(data-pct);
+                }
+
+
 
             {% endfor %}
         {% endwith %}
+
+
+        body {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-align: center;
+              -ms-flex-align: center;
+                  align-items: center;
+          -webkit-box-pack: center;
+              -ms-flex-pack: center;
+                  justify-content: center;
+          height: 100vh;
+          -webkit-transform-style: preserve-3d;
+                  transform-style: preserve-3d;
+          -webkit-transform: perspective(800px);
+                  transform: perspective(800px);
+        }
+
     </style>
 
     <h1><b> TOP 10 </b></h1>
     <hr style="border:3px solid #f1f1f1">
-    <div class="row">
+
+    <div>
         {% for user in users %}
 
-            <div class="side">
-                <div>{{ user.name }}</div>
-            </div>
-            <div class="middle">
-                <div class="bar-container">
-                    <div class="bar-{{ forloop.revcounter }}"></div>
+            <div id="cont-{{ forloop.revcounter }}">
+                <p class="title">{{ user.name }}</p>
+                <div class="demo" data-pct="{{ user.score }}">
+
+                    <svg class="progress" width="180" height="180">
+                        <text x="90" y="90" font-size="2em" text-anchor="middle" alignment-baseline="central">
+                            {{ user.score }}
+                        </text>
+                        <circle class="progress__meter" r="80" stroke="#e6e6e6" cx="90" cy="90" stroke-width="20"
+                                fill="none"></circle>
+                        <circle class="progress__value-{{ forloop.revcounter }}" r="80" cx="90" cy="90"
+                                transform="rotate(-90, 90, 90)" stroke-width="20"
+                                fill="none" stroke-dasharray="55" stroke-dashoffset="0">
+                        </circle>
+                    </svg>
                 </div>
-            </div>
-            <div class="side right">
-                <div><b>{{ user.score }}</b></div>
             </div>
 
         {% endfor %}
-        <div class="middle">
-            <div>
-                <button onclick="window.location.href={% url 'welcome' %}"> Go Back </button>
-            </div>
+
+        <div>
+{#            <button onclick="window.location.href='{% url 'welcome' %}'">Go Back</button>#}
+            <a href="{% url 'welcome' %}" data-title="Go Back"></a>
         </div>
+
     </div>
 
+{% endblock %}
+
+
+{% block javascript %}
+
+    <script>
+        var docStyle = document.documentElement.style;
+        var aElem = document.querySelector('a');
+        var boundingClientRect = aElem.getBoundingClientRect();
+
+        aElem.onmousemove = function (e) {
+
+            var x = e.clientX - boundingClientRect.left;
+            var y = e.clientY - boundingClientRect.top;
+
+            var xc = boundingClientRect.width / 2;
+            var yc = boundingClientRect.height / 2;
+
+            var dx = x - xc;
+            var dy = y - yc;
+
+            docStyle.setProperty('--rx', dy / -1 + 'deg');
+            docStyle.setProperty('--ry', dx / 10 + 'deg');
+        };
+
+        aElem.onmouseleave = function (e) {
+
+            docStyle.setProperty('--ty', '0');
+            docStyle.setProperty('--rx', '0');
+            docStyle.setProperty('--ry', '0');
+        };
+
+        aElem.onmousedown = function (e) {
+
+            docStyle.setProperty('--tz', '-25px');
+        };
+
+        document.body.onmouseup = function (e) {
+
+            docStyle.setProperty('--tz', '-12px');
+        };
+        var RADIUS = 80;
+        /* This var must be equals circle's radius  */
+        var HIGHSCORE = 55;
+        var VEL = 10;
+        /* milliseconds */
+        var CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+        function progress(value, elem) {
+
+            var progress = value / HIGHSCORE;
+            var dashoffset = CIRCUMFERENCE * (1 - progress);
+            var width = 1;
+            var id = setInterval(frame, VEL);
+
+            function frame() {
+                if (width >= dashoffset) {
+                    clearInterval(id);
+                } else {
+                    width++;
+                    elem.style.strokeDashoffset = width;
+                }
+            }
+        }
+
+        // control.addEventListener('input', function(event) {
+        //     progress(event.target.valueAsNumber);
+        // });
+        {% for user in users %}
+            var progressValue{{ forloop.revcounter }} = document.querySelector('.progress__value-{{ forloop.revcounter }}');
+            progressValue{{ forloop.revcounter }}.style.strokeDasharray = CIRCUMFERENCE;
+            progress(parseInt({{ user.score }}), progressValue{{ forloop.revcounter }});
+        {% endfor %}
+
+    </script>
 
 {% endblock %}
