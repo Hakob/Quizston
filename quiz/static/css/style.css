@@ -29,3 +29,9 @@
         #bottom{
             text-align:center;
         }
+        .check_label{
+            cursor:pointer;
+        }
+        .check_label:hover{
+            background:#eee;
+        }
